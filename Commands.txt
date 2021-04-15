@@ -1,0 +1,1 @@
+gcc console.c mpc.c -o parser -Wall  // Compile multiple C files
