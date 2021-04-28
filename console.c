@@ -1,9 +1,63 @@
 #include <stdio.h> // define the header file
 #include <stdlib.h>
+#include <string.h>
 #include "mpc.h"
 
 /* Declare a buffer for user input of size 2048 */
 static char input[2048];
+
+//count the number of nodes in the abstract syntax tree
+int number_of_nodes(mpc_ast_t *t)
+{
+    if (t->children_num == 0)
+        return 1;
+    if (t->children_num >= 1)
+    {
+        int total_nodes = 1;
+        for (int i = 0; i < t->children_num; i++)
+        {
+            total_nodes = total_nodes + number_of_nodes(t->children[i]);
+        }
+        return total_nodes;
+    }
+    return 0;
+}
+
+//function to recognize the operation
+long eval_op(long x, char *op, long y)
+{
+    if (strcmp(op, "+") == 0) return x + y;
+    if (strcmp(op, "-") == 0) return x - y;
+    if (strcmp(op, "*") == 0) return x * y;
+    if (strcmp(op, "/") == 0) return x / y;
+    return 0;
+}
+
+//evaluation function
+long eval(mpc_ast_t *t)
+{
+    //return immediately if it's a number
+    if (strstr(t->tag, "number"))
+    {
+        return atoi(t->contents);
+    }
+
+    //get the operator since the second child must be an operator
+    char *op = t->children[1]->contents;
+
+    //store the 3rd child in this variable "x"
+    long x = eval(t->children[2]);
+
+    //use recursion to iterate through the remaining children
+    int i = 3;
+    while (strstr(t->children[i]->tag, "expr"))
+    {
+        x = eval_op(x, op, eval(t->children[i]));
+        i++;
+    }
+    return x;
+}
+
 
 int main()
 {
@@ -38,8 +92,8 @@ int main()
         mpc_result_t r;
         if (mpc_parse("<stdin>", input, Lispy, &r))
         {
-            /* On success print and delete the AST */
-            mpc_ast_print(r.output);
+            long result = eval(r.output);
+            printf("%li\n", result);
             mpc_ast_delete(r.output);
         }
         else
@@ -48,9 +102,9 @@ int main()
             mpc_err_print(r.error);
             mpc_err_delete(r.error);
         }
+
+        free(input);
     }
-
-    free(input);
-
+    
     return 0;
 }
