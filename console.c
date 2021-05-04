@@ -83,12 +83,14 @@ int main()
             long numberOfNodes = number_of_nodes(r.output);
             long numberOfLeaves = number_of_leaves(r.output);
             long numberOfBranches = number_of_branches(r.output);
+            long mostNumberOfChildren = most_num_of_children_from_branch(r.output);
 
             //print the result, the numbers of nodes and leaves
             printf("The number of nodes are %li\n", numberOfNodes);
             printf("The number of leaves are %li\n", numberOfLeaves);
             printf("The number of branches are %li\n", numberOfBranches);
-            printf("%li\n", result);
+            printf("The most number of children from a branch are %li\n", mostNumberOfChildren);
+            printf("\n\nThe result is: %li\n", result);
 
             //clear the tree
             mpc_ast_delete(r.output);
@@ -99,8 +101,6 @@ int main()
             mpc_err_print(r.error);
             mpc_err_delete(r.error);
         }
-
-        free(input);
     }
     
     return 0;
