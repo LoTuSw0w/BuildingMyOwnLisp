@@ -1,27 +1,11 @@
 #include <stdio.h> // define the header file
 #include <stdlib.h>
 #include <string.h>
+#include "exercise.h"
 #include "mpc.h"
 
 /* Declare a buffer for user input of size 2048 */
 static char input[2048];
-
-//count the number of nodes in the abstract syntax tree
-int number_of_nodes(mpc_ast_t *t)
-{
-    if (t->children_num == 0)
-        return 1;
-    if (t->children_num >= 1)
-    {
-        int total_nodes = 1;
-        for (int i = 0; i < t->children_num; i++)
-        {
-            total_nodes = total_nodes + number_of_nodes(t->children[i]);
-        }
-        return total_nodes;
-    }
-    return 0;
-}
 
 //function to recognize the operation
 long eval_op(long x, char *op, long y)
@@ -92,8 +76,21 @@ int main()
         mpc_result_t r;
         if (mpc_parse("<stdin>", input, Lispy, &r))
         {
+            //evaluate the result
             long result = eval(r.output);
+
+            //calculate the number of nodes and leaves respectively
+            long numberOfNodes = number_of_nodes(r.output);
+            long numberOfLeaves = number_of_leaves(r.output);
+            long numberOfBranches = number_of_branches(r.output);
+
+            //print the result, the numbers of nodes and leaves
+            printf("The number of nodes are %li\n", numberOfNodes);
+            printf("The number of leaves are %li\n", numberOfLeaves);
+            printf("The number of branches are %li\n", numberOfBranches);
             printf("%li\n", result);
+
+            //clear the tree
             mpc_ast_delete(r.output);
         }
         else
