@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "exercise.h": "c",
+        "mpc.h": "c"
+    }
+}

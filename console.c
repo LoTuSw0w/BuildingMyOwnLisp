@@ -1,6 +1,8 @@
 #include <stdio.h> // define the header file
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+
 #include "exercise.h"
 #include "mpc.h"
 
@@ -14,6 +16,8 @@ long eval_op(long x, char *op, long y)
     if (strcmp(op, "-") == 0) return x - y;
     if (strcmp(op, "*") == 0) return x * y;
     if (strcmp(op, "/") == 0) return x / y;
+    if (strcmp(op, "%") == 0) return x % y;
+    if (strcmp(op, "^") == 0) return pow(x,y);
     return 0;
 }
 
@@ -55,7 +59,7 @@ int main()
     mpca_lang(MPCA_LANG_DEFAULT,
               "                                                     \
       number   : /-?[0-9]+/ ;                             \
-      operator : '+' | '-' | '*' | '/' ;                  \
+      operator : '+' | '-' | '*' | '/' | '%' | '^';                  \
       expr     : <number> | '(' <operator> <expr>+ ')' ;  \
       lispy    : /^/ <operator> <expr>+ /$/ ;             \
     ",
