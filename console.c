@@ -12,12 +12,22 @@ static char input[2048];
 //function to recognize the operation
 long eval_op(long x, char *op, long y)
 {
-    if (strcmp(op, "+") == 0) return x + y;
-    if (strcmp(op, "-") == 0) return x - y;
-    if (strcmp(op, "*") == 0) return x * y;
-    if (strcmp(op, "/") == 0) return x / y;
-    if (strcmp(op, "%") == 0) return x % y;
-    if (strcmp(op, "^") == 0) return pow(x,y);
+    if (strcmp(op, "+") == 0)
+        return x + y;
+    if (strcmp(op, "-") == 0)
+        return x - y;
+    if (strcmp(op, "*") == 0)
+        return x * y;
+    if (strcmp(op, "/") == 0)
+        return x / y;
+    if (strcmp(op, "%") == 0)
+        return x % y;
+    if (strcmp(op, "^") == 0)
+        return pow(x, y);
+    if (strcmp(op, "max") == 0)
+        return x > y ? x : y;
+    if (strcmp(op, "min") == 0)
+        return x < y ? x : y;
     return 0;
 }
 
@@ -43,9 +53,9 @@ long eval(mpc_ast_t *t)
         x = eval_op(x, op, eval(t->children[i]));
         i++;
     }
+
     return x;
 }
-
 
 int main()
 {
@@ -57,13 +67,13 @@ int main()
 
     /* Define them with the following Language */
     mpca_lang(MPCA_LANG_DEFAULT,
-              "                                                     \
-      number   : /-?[0-9]+/ ;                             \
-      operator : '+' | '-' | '*' | '/' | '%' | '^';                  \
-      expr     : <number> | '(' <operator> <expr>+ ')' ;  \
-      lispy    : /^/ <operator> <expr>+ /$/ ;             \
+              "                                                                         \
+      number   : /-?[0-9]+/ ;                                                           \
+      operator : '+' | '-' | '*' | '/' | '%' | '^' | \"min\" | \"max\";                 \
+      expr     : <number> | '(' <operator> <expr>+ ')' ;                                \
+      lispy    : /^/ <operator> <expr>+ /$/ ;                                           \
     ",
-              Number, Operator, Expr, Lispy);
+    Number, Operator, Expr, Lispy);
 
     puts("Homemade console version 0.0.1");
     puts("Press Ctrl + C to exit this console!");
@@ -106,6 +116,6 @@ int main()
             mpc_err_delete(r.error);
         }
     }
-    
+
     return 0;
 }
